@@ -23,7 +23,7 @@ type RequestGenerators<ResponseDataType> = {
 type RequesterReturnType<ResponseDataType> = [RequestGenerators<ResponseDataType>, () => void];
 declare const useAxiosRequest: <ResponseDataType>(axiosOptions?: AxiosRequestConfig, retryOptions?: IAxiosRetryConfig, hookOptions?: HookOptions) => [RequestGenerators<ResponseDataType>, () => void];
 
-type QueryOptions<ResponseDataType> = Omit<UseQueryOptions<ResponseDataType, AxiosError>, 'queryFn' | 'queryKey'>;
-declare const useAxiosQuery: <ResponseDataType>(name: QueryKey, queryFn: (generator: RequestGenerators<ResponseDataType>, canceller: () => void) => Promise<ResponseDataType>, options?: QueryOptions<ResponseDataType>, axiosOptions?: AxiosRequestConfig, retryOptions?: IAxiosRetryConfig, hookOptions?: HookOptions) => [ResponseDataType | undefined, Omit<UseQueryResult<ResponseDataType, AxiosError<unknown, any>>, "data">];
+type QueryOptions<ReturnDataType> = Omit<UseQueryOptions<ReturnDataType, AxiosError>, 'queryFn' | 'queryKey'>;
+declare const useAxiosQuery: <AxiosResponseDataType, ReturnDataType>(name: QueryKey, queryFn: (generator: RequestGenerators<AxiosResponseDataType>, canceller: () => void) => Promise<ReturnDataType>, options?: QueryOptions<ReturnDataType>, axiosOptions?: AxiosRequestConfig, retryOptions?: IAxiosRetryConfig, hookOptions?: HookOptions) => [ReturnDataType | undefined, Omit<UseQueryResult<ReturnDataType, AxiosError<unknown, any>>, "data">];
 
 export { HookOptions, QueryOptions, REQUEST_AUTOMATICALLY_CANCELLED, REQUEST_MANUALLY_CANCELLED, RequestGenerator, RequestGeneratorWithData, RequestGeneratorWithoutDataOptions, RequestGenerators, RequesterReturnType, useAxiosQuery, useAxiosRequest };
