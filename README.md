@@ -26,7 +26,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 type Todo = {
   completed: boolean;
   id: number;
-  text: string;
+  todo: string;
 }
 
 type DataType = Todo[]
@@ -45,7 +45,7 @@ const Todos = () => {
   }
   
   if (Array.isArray(data) && data.length) {
-    return data.map(({ completed, id, text }) => <div key={id}>{text}{completed ? ' - Done!' : ''}</div>;
+    return data.map(({ completed, id, todo }) => <div key={id}>{todo}{completed ? ' - Done!' : ''}</div>;
   }
 
   if (error) {
