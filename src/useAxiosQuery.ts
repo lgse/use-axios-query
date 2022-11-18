@@ -19,20 +19,25 @@ export const useAxiosQuery = <TDataType>(
     axios: Axios,
     canceller: () => void
   ) => Promise<TDataType>,
-  options: QueryOptions<TDataType> = {},
+  queryOptions: QueryOptions<TDataType> = {},
   axiosOptions: AxiosRequestConfig = {},
   retryOptions: IAxiosRetryConfig = {},
-  hookOptions: HookOptions = {}
+  axiosRequestHookOptions: HookOptions = {}
 ): [
   TDataType | undefined,
   Omit<UseQueryResult<TDataType, AxiosError>, 'data'>
 ] => {
-  const [request, canceller] = useAxiosRequest(axiosOptions, retryOptions, hookOptions);
+  const mergedQueryOptions: QueryOptions<TDataType> = {
+    refetchOnWindowFocus: false,
+    ...queryOptions,
+  }
+
+  const [request, canceller] = useAxiosRequest(axiosOptions, retryOptions, axiosRequestHookOptions);
 
   const { data, ...otherProps } = useQuery<TDataType, AxiosError>(
     name,
     () => queryFn(request, canceller),
-    options
+    mergedQueryOptions
   );
 
   return [data, otherProps];
