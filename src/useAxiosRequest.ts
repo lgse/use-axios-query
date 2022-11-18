@@ -16,36 +16,34 @@ export type HookOptions = {
   cancelAutomatically?: boolean;
 };
 
-export type RequestGenerator<ResponseDataType> = (
+export type RequestGenerator = <TResponseType>(
   url: string,
   options?: AxiosRequestConfig
-) => Promise<AxiosResponse<ResponseDataType>>;
+) => Promise<AxiosResponse<TResponseType>>;
 
 export type RequestGeneratorWithoutDataOptions = Omit<AxiosRequestConfig, 'data'>;
 
-export type RequestGeneratorWithData<ResponseDataType> = (
+export type RequestGeneratorWithData = <TResponseType>(
   url: string,
   data: any,
   options: RequestGeneratorWithoutDataOptions
-) => Promise<AxiosResponse<ResponseDataType>>;
+) => Promise<AxiosResponse<TResponseType>>;
 
-export type RequestGenerators<ResponseDataType> = {
-  delete: RequestGenerator<ResponseDataType>;
-  get: RequestGenerator<ResponseDataType>;
-  head: RequestGenerator<ResponseDataType>;
-  options: RequestGenerator<ResponseDataType>;
-  patch: RequestGeneratorWithData<ResponseDataType>;
-  post: RequestGeneratorWithData<ResponseDataType>;
-  put: RequestGeneratorWithData<ResponseDataType>;
+export type Axios = {
+  delete: RequestGenerator;
+  get: RequestGenerator;
+  head: RequestGenerator;
+  options: RequestGenerator;
+  patch: RequestGeneratorWithData;
+  post: RequestGeneratorWithData;
+  put: RequestGeneratorWithData;
 };
 
-export type RequesterReturnType<ResponseDataType> = [RequestGenerators<ResponseDataType>, () => void];
-
-export const useAxiosRequest = <ResponseDataType>(
+export const useAxiosRequest = (
   axiosOptions: AxiosRequestConfig = {},
   retryOptions: IAxiosRetryConfig = {},
   hookOptions: HookOptions = {}
-): [RequestGenerators<ResponseDataType>, () => void] => {
+): [Axios, () => void] => {
   const mergedHookOptions = {
     authorizationHandler: null,
     cancelAutomatically: true,
@@ -63,8 +61,8 @@ export const useAxiosRequest = <ResponseDataType>(
   };
 
   const request = useCallback(
-    (url: string, method: string, requestOptions: AxiosRequestConfig = {}) =>
-      new Promise<AxiosResponse<ResponseDataType>>((resolve, reject) => {
+    <TResponseType>(url: string, method: string, requestOptions: AxiosRequestConfig = {}) =>
+      new Promise<AxiosResponse<TResponseType>>((resolve, reject) => {
         const { cancel, token } = axios.CancelToken.source();
         cancelRef.current.push(cancel);
 
@@ -108,30 +106,30 @@ export const useAxiosRequest = <ResponseDataType>(
     []
   );
 
-  const generators: RequestGenerators<ResponseDataType> = {
-    delete: (url: string, options: AxiosRequestConfig = {}) =>
-      request(url, 'delete', options),
-    get: (url: string, options: AxiosRequestConfig = {}) =>
-      request(url, 'get', options),
-    head: (url: string, options: AxiosRequestConfig = {}) =>
-      request(url, 'head', options),
-    patch: (
+  const generators: Axios = {
+    delete: <TResponseType>(url: string, options: AxiosRequestConfig = {}) =>
+      request<TResponseType>(url, 'delete', options),
+    get: <TResponseType>(url: string, options: AxiosRequestConfig = {}) =>
+      request<TResponseType>(url, 'get', options),
+    head: <TResponseType>(url: string, options: AxiosRequestConfig = {}) =>
+      request<TResponseType>(url, 'head', options),
+    patch: <TResponseType>(
       url: string,
       data: any = null,
       options: RequestGeneratorWithoutDataOptions = {}
-    ) => request(url, 'patch', { ...options, data }),
-    options: (url: string, options: AxiosRequestConfig = {}) =>
-      request(url, 'options', options),
-    post: (
+    ) => request<TResponseType>(url, 'patch', { ...options, data }),
+    options: <TResponseType>(url: string, options: AxiosRequestConfig = {}) =>
+      request<TResponseType>(url, 'options', options),
+    post: <TResponseType>(
       url: string,
       data: any = null,
       options: RequestGeneratorWithoutDataOptions = {}
-    ) => request(url, 'post', { ...options, data }),
-    put: (
+    ) => request<TResponseType>(url, 'post', { ...options, data }),
+    put: <TResponseType>(
       url: string,
       data: any = null,
       options: RequestGeneratorWithoutDataOptions = {}
-    ) => request(url, 'put', { ...options, data }),
+    ) => request<TResponseType>(url, 'put', { ...options, data }),
   };
 
   useEffect(

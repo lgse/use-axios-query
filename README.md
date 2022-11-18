@@ -20,7 +20,8 @@ npm install --save @lgse/use-axios-query axios axios-retry @tanstack/react-query
 # Usage
 
 ```typescript jsx
-import { useAxiosQuery } from '@lgse/use-axios-query';
+import * as React from 'react';
+import { useAxiosQuery } from './useAxiosQuery';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 type Todo = {
@@ -31,19 +32,19 @@ type Todo = {
 
 type DataType = Todo[]
 
-type AxiosResponseType = {
+type ResponseType = {
   todos: Todo[]
 }
 
 const Todos = () => {
-  const [data, { error }] = useAxiosQuery<AxiosResponseType, DataType>(['todos'], (axios, cancelRequest) => {
-    return axios.get('https://dummyjson.com/todos').then(({ data: { todos } }) => todos);
+  const [data, { error }] = useAxiosQuery<DataType>(['todos'], (axios, cancelRequest) => {
+    return axios.get<ResponseType>('https://dummyjson.com/todos').then(({ data: { todos } }) => todos);
   });
-  
+
   if (Array.isArray(data) && !data.length) {
     return <div>No todos to show</div>
   }
-  
+
   if (Array.isArray(data) && data.length) {
     return data.map(({ completed, id, todo }) => <div key={id}>{todo}{completed ? ' - Done!' : ''}</div>;
   }
@@ -51,7 +52,7 @@ const Todos = () => {
   if (error) {
     return <div>Error fetching todos :(</div>;
   }
-  
+
   return <div>Loading...</div>
 };
 

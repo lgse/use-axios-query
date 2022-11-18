@@ -6,30 +6,30 @@ import {
   UseQueryOptions,
   UseQueryResult,
 } from '@tanstack/react-query';
-import { HookOptions, RequestGenerators, useAxiosRequest } from './useAxiosRequest';
+import { Axios, HookOptions, useAxiosRequest } from './useAxiosRequest';
 
-export type QueryOptions<ReturnDataType> = Omit<
-  UseQueryOptions<ReturnDataType, AxiosError>,
+export type QueryOptions<TDataType> = Omit<
+  UseQueryOptions<TDataType, AxiosError>,
   'queryFn' | 'queryKey'
 >;
 
-export const useAxiosQuery = <AxiosResponseDataType, ReturnDataType>(
+export const useAxiosQuery = <TDataType>(
   name: QueryKey,
   queryFn: (
-    generator: RequestGenerators<AxiosResponseDataType>,
+    axios: Axios,
     canceller: () => void
-  ) => Promise<ReturnDataType>,
-  options: QueryOptions<ReturnDataType> = {},
+  ) => Promise<TDataType>,
+  options: QueryOptions<TDataType> = {},
   axiosOptions: AxiosRequestConfig = {},
   retryOptions: IAxiosRetryConfig = {},
   hookOptions: HookOptions = {}
 ): [
-  ReturnDataType | undefined,
-  Omit<UseQueryResult<ReturnDataType, AxiosError>, 'data'>
+  TDataType | undefined,
+  Omit<UseQueryResult<TDataType, AxiosError>, 'data'>
 ] => {
-  const [request, canceller] = useAxiosRequest<AxiosResponseDataType>(axiosOptions, retryOptions, hookOptions);
+  const [request, canceller] = useAxiosRequest(axiosOptions, retryOptions, hookOptions);
 
-  const { data, ...otherProps } = useQuery<ReturnDataType, AxiosError>(
+  const { data, ...otherProps } = useQuery<TDataType, AxiosError>(
     name,
     () => queryFn(request, canceller),
     options
