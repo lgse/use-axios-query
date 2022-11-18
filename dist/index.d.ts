@@ -8,22 +8,21 @@ type HookOptions = {
     authorizationHandler?: (e: AxiosError) => void;
     cancelAutomatically?: boolean;
 };
-type RequestGenerator<ResponseDataType> = (url: string, options?: AxiosRequestConfig) => Promise<AxiosResponse<ResponseDataType>>;
+type RequestGenerator = <TResponseType>(url: string, options?: AxiosRequestConfig) => Promise<AxiosResponse<TResponseType>>;
 type RequestGeneratorWithoutDataOptions = Omit<AxiosRequestConfig, 'data'>;
-type RequestGeneratorWithData<ResponseDataType> = (url: string, data: any, options: RequestGeneratorWithoutDataOptions) => Promise<AxiosResponse<ResponseDataType>>;
-type RequestGenerators<ResponseDataType> = {
-    delete: RequestGenerator<ResponseDataType>;
-    get: RequestGenerator<ResponseDataType>;
-    head: RequestGenerator<ResponseDataType>;
-    options: RequestGenerator<ResponseDataType>;
-    patch: RequestGeneratorWithData<ResponseDataType>;
-    post: RequestGeneratorWithData<ResponseDataType>;
-    put: RequestGeneratorWithData<ResponseDataType>;
+type RequestGeneratorWithData = <TResponseType>(url: string, data: any, options: RequestGeneratorWithoutDataOptions) => Promise<AxiosResponse<TResponseType>>;
+type Axios = {
+    delete: RequestGenerator;
+    get: RequestGenerator;
+    head: RequestGenerator;
+    options: RequestGenerator;
+    patch: RequestGeneratorWithData;
+    post: RequestGeneratorWithData;
+    put: RequestGeneratorWithData;
 };
-type RequesterReturnType<ResponseDataType> = [RequestGenerators<ResponseDataType>, () => void];
-declare const useAxiosRequest: <ResponseDataType>(axiosOptions?: AxiosRequestConfig, retryOptions?: IAxiosRetryConfig, hookOptions?: HookOptions) => [RequestGenerators<ResponseDataType>, () => void];
+declare const useAxiosRequest: (axiosOptions?: AxiosRequestConfig, retryOptions?: IAxiosRetryConfig, hookOptions?: HookOptions) => [Axios, () => void];
 
-type QueryOptions<ReturnDataType> = Omit<UseQueryOptions<ReturnDataType, AxiosError>, 'queryFn' | 'queryKey'>;
-declare const useAxiosQuery: <AxiosResponseDataType, ReturnDataType>(name: QueryKey, queryFn: (generator: RequestGenerators<AxiosResponseDataType>, canceller: () => void) => Promise<ReturnDataType>, options?: QueryOptions<ReturnDataType>, axiosOptions?: AxiosRequestConfig, retryOptions?: IAxiosRetryConfig, hookOptions?: HookOptions) => [ReturnDataType | undefined, Omit<UseQueryResult<ReturnDataType, AxiosError<unknown, any>>, "data">];
+type QueryOptions<TDataType> = Omit<UseQueryOptions<TDataType, AxiosError>, 'queryFn' | 'queryKey'>;
+declare const useAxiosQuery: <TDataType>(name: QueryKey, queryFn: (axios: Axios, canceller: () => void) => Promise<TDataType>, options?: QueryOptions<TDataType>, axiosOptions?: AxiosRequestConfig, retryOptions?: IAxiosRetryConfig, hookOptions?: HookOptions) => [TDataType | undefined, Omit<UseQueryResult<TDataType, AxiosError<unknown, any>>, "data">];
 
-export { HookOptions, QueryOptions, REQUEST_AUTOMATICALLY_CANCELLED, REQUEST_MANUALLY_CANCELLED, RequestGenerator, RequestGeneratorWithData, RequestGeneratorWithoutDataOptions, RequestGenerators, RequesterReturnType, useAxiosQuery, useAxiosRequest };
+export { Axios, HookOptions, QueryOptions, REQUEST_AUTOMATICALLY_CANCELLED, REQUEST_MANUALLY_CANCELLED, RequestGenerator, RequestGeneratorWithData, RequestGeneratorWithoutDataOptions, useAxiosQuery, useAxiosRequest };

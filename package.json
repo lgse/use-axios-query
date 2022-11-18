@@ -1,6 +1,6 @@
 {
   "name": "@lgse/use-axios-query",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "use-axios-query is a wrapper around axios and react-query.",
   "keywords": [
     "axios",
