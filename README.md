@@ -27,9 +27,15 @@ type Todo = {
   text: string;
 }
 
+type DataType = Todo[]
+
+type AxiosResponseType = {
+  todos: Todo[]
+}
+
 const Todos = () => {
-  const [data, { error }] = useAxiosQuery<Todo[]>(['todos'], (axios, cancelRequest) => {
-    return axios.get('/todos').then(({ data }) => data);
+  const [data, { error }] = useAxiosQuery<AxiosResponseType, DataType>(['todos'], (axios, cancelRequest) => {
+    return axios.get('https://dummyjson.com/todos').then(({ data: { todos } }) => todos);
   });
   
   if (Array.isArray(data) && !data.length) {
