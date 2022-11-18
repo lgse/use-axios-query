@@ -23,6 +23,6 @@ type Axios = {
 declare const useAxiosRequest: (axiosOptions?: AxiosRequestConfig, retryOptions?: IAxiosRetryConfig, hookOptions?: HookOptions) => [Axios, () => void];
 
 type QueryOptions<TDataType> = Omit<UseQueryOptions<TDataType, AxiosError>, 'queryFn' | 'queryKey'>;
-declare const useAxiosQuery: <TDataType>(name: QueryKey, queryFn: (axios: Axios, canceller: () => void) => Promise<TDataType>, options?: QueryOptions<TDataType>, axiosOptions?: AxiosRequestConfig, retryOptions?: IAxiosRetryConfig, hookOptions?: HookOptions) => [TDataType | undefined, Omit<UseQueryResult<TDataType, AxiosError<unknown, any>>, "data">];
+declare const useAxiosQuery: <TDataType>(name: QueryKey, queryFn: (axios: Axios, canceller: () => void) => Promise<TDataType>, queryOptions?: QueryOptions<TDataType>, axiosOptions?: AxiosRequestConfig, retryOptions?: IAxiosRetryConfig, axiosRequestHookOptions?: HookOptions) => [TDataType | undefined, Omit<UseQueryResult<TDataType, AxiosError<unknown, any>>, "data">];
 
 export { Axios, HookOptions, QueryOptions, REQUEST_AUTOMATICALLY_CANCELLED, REQUEST_MANUALLY_CANCELLED, RequestGenerator, RequestGeneratorWithData, RequestGeneratorWithoutDataOptions, useAxiosQuery, useAxiosRequest };

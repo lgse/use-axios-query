@@ -79,12 +79,16 @@ const useAxiosRequest = (axiosOptions = {}, retryOptions = {}, hookOptions = {})
   return [generators, () => canceler(REQUEST_MANUALLY_CANCELLED)];
 };
 
-const useAxiosQuery = (name, queryFn, options = {}, axiosOptions = {}, retryOptions = {}, hookOptions = {}) => {
-  const [request, canceller] = useAxiosRequest(axiosOptions, retryOptions, hookOptions);
+const useAxiosQuery = (name, queryFn, queryOptions = {}, axiosOptions = {}, retryOptions = {}, axiosRequestHookOptions = {}) => {
+  const mergedQueryOptions = {
+    refetchOnWindowFocus: false,
+    ...queryOptions
+  };
+  const [request, canceller] = useAxiosRequest(axiosOptions, retryOptions, axiosRequestHookOptions);
   const { data, ...otherProps } = reactQuery.useQuery(
     name,
     () => queryFn(request, canceller),
-    options
+    mergedQueryOptions
   );
   return [data, otherProps];
 };
