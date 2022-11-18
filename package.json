@@ -40,7 +40,7 @@
     "build": "rimraf dist && rollup -c rollup.config.mjs",
     "dev": "jest --watchAll",
     "prettier": "prettier --write \"src/**/*.ts\"",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "repository": {
     "type": "git",

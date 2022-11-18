@@ -22,17 +22,15 @@ jobs:
 
       # Install dependencies
       - name: Install dependencies
-        run: yarn install
+        run: npm install
 
       # Tests
       - name: Run tests
-        run: yarn test
+        run: npm test
 
       # Build
       - name: Run build
-        run: |
-          rm -rf dist
-          yarn build
+        run: npm run build
 
       # Configure Git
       - name: Git configuration
@@ -70,7 +68,7 @@ jobs:
 
       # Publish version to public repository
       - name: Publish
-        run: yarn publish --verbose --access public --tag ${{ env.RELEASE_TAG }}
+        run: npm publish --verbose --access public --tag ${{ env.RELEASE_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_ACCESS_TOKEN }}
 
