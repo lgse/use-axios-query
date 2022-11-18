@@ -1,9 +1,7 @@
-'use strict';
-
-var reactQuery = require('@tanstack/react-query');
-var axios = require('axios');
-var axiosRetry = require('axios-retry');
-var react = require('react');
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import axiosRetry from 'axios-retry';
+import { useRef, useCallback, useEffect } from 'react';
 
 const REQUEST_MANUALLY_CANCELLED = "REQUEST_MANUALLY_CANCELLED";
 const REQUEST_AUTOMATICALLY_CANCELLED = "REQUEST_AUTOMATICALLY_CANCELLED";
@@ -13,7 +11,7 @@ const useAxiosRequest = (axiosOptions = {}, retryOptions = {}, hookOptions = {})
     cancelAutomatically: true,
     ...hookOptions
   };
-  const cancelRef = react.useRef([]);
+  const cancelRef = useRef([]);
   const canceler = (reason) => {
     cancelRef.current.forEach((callback) => {
       if (typeof callback === "function") {
@@ -21,7 +19,7 @@ const useAxiosRequest = (axiosOptions = {}, retryOptions = {}, hookOptions = {})
       }
     });
   };
-  const request = react.useCallback(
+  const request = useCallback(
     (url, method, requestOptions = {}) => new Promise((resolve, reject) => {
       const { cancel, token } = axios.CancelToken.source();
       cancelRef.current.push(cancel);
@@ -67,7 +65,7 @@ const useAxiosRequest = (axiosOptions = {}, retryOptions = {}, hookOptions = {})
     post: (url, data = null, options = {}) => request(url, "post", { ...options, data }),
     put: (url, data = null, options = {}) => request(url, "put", { ...options, data })
   };
-  react.useEffect(
+  useEffect(
     () => () => {
       const { cancelAutomatically } = mergedHookOptions;
       if (cancelAutomatically) {
@@ -81,7 +79,7 @@ const useAxiosRequest = (axiosOptions = {}, retryOptions = {}, hookOptions = {})
 
 const useAxiosQuery = (name, queryFn, options = {}, axiosOptions = {}, retryOptions = {}, hookOptions = {}) => {
   const [request, canceller] = useAxiosRequest(axiosOptions, retryOptions, hookOptions);
-  const { data, ...otherProps } = reactQuery.useQuery(
+  const { data, ...otherProps } = useQuery(
     name,
     () => queryFn(request, canceller),
     options
@@ -89,8 +87,5 @@ const useAxiosQuery = (name, queryFn, options = {}, axiosOptions = {}, retryOpti
   return [data, otherProps];
 };
 
-exports.REQUEST_AUTOMATICALLY_CANCELLED = REQUEST_AUTOMATICALLY_CANCELLED;
-exports.REQUEST_MANUALLY_CANCELLED = REQUEST_MANUALLY_CANCELLED;
-exports.useAxiosQuery = useAxiosQuery;
-exports.useAxiosRequest = useAxiosRequest;
-//# sourceMappingURL=index.js.map
+export { REQUEST_AUTOMATICALLY_CANCELLED, REQUEST_MANUALLY_CANCELLED, useAxiosQuery, useAxiosRequest };
+//# sourceMappingURL=index.mjs.map

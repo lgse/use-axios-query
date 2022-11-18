@@ -1,4 +1,5 @@
 import { AxiosError, AxiosRequestConfig } from 'axios';
+import { IAxiosRetryConfig } from 'axios-retry';
 import {
   QueryKey,
   useQuery,
@@ -6,7 +7,6 @@ import {
   UseQueryResult,
 } from '@tanstack/react-query';
 import { HookOptions, RequestGenerators, useAxiosRequest } from './useAxiosRequest';
-import { IAxiosRetryConfig } from 'axios-retry';
 
 export type QueryOptions<ResponseDataType> = Omit<
   UseQueryOptions<ResponseDataType, AxiosError>,

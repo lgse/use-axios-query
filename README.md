@@ -9,7 +9,7 @@ useAxiosQuery is a wrapper around the [axios](https://github.com/axios/axios) HT
 # Install
 The following peer dependencies are required:
 - [@tanstack/react-query](https://www.npmjs.com/package/@tanstack/react-query) `4.x.x`
-- [react](https://www.npmjs.com/package/react)`17.x.x` or `18.x.x`
+- [react](https://www.npmjs.com/package/react) `17.x.x` or `18.x.x`
 
 ```
 npm install @lgse/use-axios-query
